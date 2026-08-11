@@ -1,4 +1,5 @@
 // dashboard_page.dart
+import 'dart:async';  // ← DITAMBAHKAN
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+// import 'package:permission_handler/permission_handler.dart';  ← DIHAPUS
 
 class DashboardPage extends StatefulWidget {
   final String token;
@@ -121,8 +122,6 @@ class _DashboardPageState extends State<DashboardPage> with SingleTickerProvider
   }
 
   void _connectSocket() {
-    // Socket.IO implementation would go here
-    // For now, we'll use HTTP polling as fallback
     _socketConnected = true;
     setState(() {});
   }
@@ -966,10 +965,7 @@ class _DashboardPageState extends State<DashboardPage> with SingleTickerProvider
       backgroundColor: const Color(0xFF020510),
       body: Stack(
         children: [
-          // Main Content
           _buildMainContent(),
-
-          // Sidebar Overlay
           if (_isSidebarOpen)
             GestureDetector(
               onTap: _toggleSidebar,
@@ -977,8 +973,6 @@ class _DashboardPageState extends State<DashboardPage> with SingleTickerProvider
                 color: Colors.black.withOpacity(0.7),
               ),
             ),
-
-          // Sidebar
           AnimatedBuilder(
             animation: _sidebarAnimation,
             builder: (context, child) {
@@ -997,9 +991,7 @@ class _DashboardPageState extends State<DashboardPage> with SingleTickerProvider
     return SafeArea(
       child: Column(
         children: [
-          // Header
           _buildHeader(),
-          // Content
           Expanded(
             child: IndexedStack(
               index: _currentPage,
@@ -1011,7 +1003,6 @@ class _DashboardPageState extends State<DashboardPage> with SingleTickerProvider
               ],
             ),
           ),
-          // Bottom Nav
           _buildBottomNav(),
         ],
       ),
@@ -1742,125 +1733,126 @@ class _DashboardPageState extends State<DashboardPage> with SingleTickerProvider
                                         ),
                                         child: Row(
                                           children: [
-                            Expanded(
-                              flex: battery,
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: battery <= 20
-                                      ? const Color(0xFFFF4D6D)
-                                      : battery <= 40
-                                          ? const Color(0xFFFFC34D)
-                                          : const Color(0xFF00e5a0),
-                                  borderRadius: BorderRadius.circular(1),
+                                            Expanded(
+                                              flex: battery,
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: battery <= 20
+                                                      ? const Color(0xFFFF4D6D)
+                                                      : battery <= 40
+                                                          ? const Color(0xFFFFC34D)
+                                                          : const Color(0xFF00e5a0),
+                                                  borderRadius: BorderRadius.circular(1),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 2),
+                                            Container(
+                                              width: 2,
+                                              height: 4,
+                                              color: const Color(0xFF1a3050),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2),
+                                      Text(
+                                        '$battery%${isCharging ? '⚡' : ''}',
+                                        style: const TextStyle(
+                                          fontSize: 7,
+                                          color: Color(0xFF8ab4e0),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        device['name'] ?? 'Unknown',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: isSelected ? Colors.white : const Color(0xFF8ab4e0),
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      Text(
+                                        device['id'] ?? '',
+                                        style: const TextStyle(
+                                          fontSize: 9,
+                                          color: Color(0xFF1a3050),
+                                          fontFamily: 'IBM Plex Mono',
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      if (battery >= 0)
+                                        Text(
+                                          'Android $androidVersion · SDK $sdkVersion',
+                                          style: const TextStyle(
+                                            fontSize: 8,
+                                            color: Color(0xFF1a3050),
+                                            fontFamily: 'IBM Plex Mono',
+                                          ),
+                                        ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(width: 2),
-                            Container(
-                              width: 2,
-                              height: 4,
-                              color: const Color(0xFF1a3050),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        '$battery%${isCharging ? '⚡' : ''}',
-                        style: const TextStyle(
-                          fontSize: 7,
-                          color: Color(0xFF8ab4e0),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          device['name'] ?? 'Unknown',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: isSelected ? Colors.white : const Color(0xFF8ab4e0),
-                            letterSpacing: 0.5,
-                          ),
-                        ),
-                        Text(
-                          device['id'] ?? '',
-                          style: const TextStyle(
-                            fontSize: 9,
-                            color: Color(0xFF1a3050),
-                            fontFamily: 'IBM Plex Mono',
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        if (battery >= 0)
-                          Text(
-                            'Android $androidVersion · SDK $sdkVersion',
-                            style: const TextStyle(
-                              fontSize: 8,
-                              color: Color(0xFF1a3050),
-                              fontFamily: 'IBM Plex Mono',
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0xFF00e5a0),
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: Color(0xFF00e5a0),
+                                            blurRadius: 8,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      '${(index + 1).toString().padLeft(2, '0')}',
+                                      style: const TextStyle(
+                                        fontSize: 9,
+                                        color: Color(0xFF1a3050),
+                                        fontFamily: 'IBM Plex Mono',
+                                      ),
+                                    ),
+                                    if (isSelected)
+                                      Container(
+                                        width: 16,
+                                        height: 16,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(4),
+                                          gradient: const LinearGradient(
+                                            colors: [Color(0xFF1d6fff), Color(0xFF00d4ff)],
+                                          ),
+                                        ),
+                                        child: const Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 12,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ],
                             ),
                           ),
-                      ],
+                        );
+                      },
                     ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        width: 6,
-                        height: 6,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF00e5a0),
-                          shape: BoxShape.circle,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Color(0xFF00e5a0),
-                              blurRadius: 8,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${(index + 1).toString().padLeft(2, '0')}',
-                        style: const TextStyle(
-                          fontSize: 9,
-                          color: Color(0xFF1a3050),
-                          fontFamily: 'IBM Plex Mono',
-                        ),
-                      ),
-                      if (isSelected)
-                        Container(
-                          width: 16,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            gradient: const LinearGradient(
-                              colors: [Color(0xFF1d6fff), Color(0xFF00d4ff)],
-                            ),
-                          ),
-                          child: const Icon(
-                            Icons.check,
-                            color: Colors.white,
-                            size: 12,
-                          ),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    ),
+        ),
+      ],
     );
   }
 

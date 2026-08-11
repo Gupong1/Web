@@ -24,8 +24,8 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.22.4'   # ✅ VERSI STABIL YANG TIDAK BERMASALAH
           channel: 'stable'
+          flutter-version: '3.22.x'   # ✅ PAKAI 3.22.x (otomatis patch terbaru)
 
       - name: Enable flutter doctor verbose
         run: flutter doctor -v

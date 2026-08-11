@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.vyper_control"
+    namespace = "com.example.my_app"
     compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.vyper_control"
+        applicationId = "com.example.my_app"
         minSdk = 21
         targetSdk = 34
         versionCode = 1

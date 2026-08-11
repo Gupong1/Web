@@ -3,8 +3,6 @@ name: Build APK Release
 on:
   push:
     branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
@@ -25,7 +23,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.22.x'   # ✅ PAKAI 3.22.x (otomatis patch terbaru)
+          flutter-version: '3.22.x'   # ← TETAP 3.22.x
 
       - name: Enable flutter doctor verbose
         run: flutter doctor -v

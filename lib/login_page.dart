@@ -277,7 +277,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     image: const DecorationImage(
                       image: AssetImage('assets/images/login_banner.gif'),
                       fit: BoxFit.cover,
-                      onError: (exception, stackTrace) => AssetImage(''),
+                      // ← HAPUS onError
                     ),
                   ),
                   child: Stack(
@@ -339,7 +339,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   ),
                 ),
 
-                // Login Card
+                // Login Card (sama seperti sebelumnya, tidak diubah)
                 Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
@@ -448,7 +448,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
                         const SizedBox(height: 20),
 
-                        // AI Chip
+                        // AI Chip (sama)
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                           decoration: BoxDecoration(
@@ -759,7 +759,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
                 const SizedBox(height: 16),
 
-                // Service Row
+                // Service Row (sama)
                 Row(
                   children: [
                     Expanded(
